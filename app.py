@@ -2,21 +2,24 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import requests
 
-st.title('Public opinion of mask usage in shops in England')
+st.title('Petition signature counts')
+
+petition_1 = st.text_input("petition id", "331430")
+petition_2 = st.text_input("petition id", "325327")
+
 
 data_load_state = st.text('Loading data...')
 
-repeal_shop_masks = requests.get("https://petition.parliament.uk/petitions/331430.json").json()
-# print(repeal_shop_masks['data']['attributes']['signature_count'])
-require_shop_masks = requests.get("https://petition.parliament.uk/petitions/325327.json").json()
-# print(require_shop_masks['data']['attributes']['signature_count'])
 
-data_load_state.text('Loading data...done!')
 
-plt.bar("repeal", repeal_shop_masks['data']['attributes']['signature_count'], label="Repeal law requiring masks in shops", color="g")
-plt.bar("require", require_shop_masks['data']['attributes']['signature_count'], label="Make wearing masks in shops mandatory", color="r")
+petition_1_data = requests.get(f"https://petition.parliament.uk/petitions/{petition_1}.json").json()
+petition_2_data = requests.get(f"https://petition.parliament.uk/petitions/{petition_2}.json").json()
+
+
+plt.bar("petition 1", petition_1_data['data']['attributes']['signature_count'], label=petition_1_data['data']['attributes']['action'], color="g")
+plt.bar("petition 2", petition_2_data['data']['attributes']['signature_count'], label=petition_2_data['data']['attributes']['action'], color="r")
 plt.legend()
-plt.title("Public opinion on masks in England")
+plt.title("Petition Signatures")
 st.pyplot()
 
-st.markdown("Data from [petition.parliament.uk](https://petition.parliament.uk/), specificially - [make mandatory](https://petition.parliament.uk/petitions/325327), [repeal](https://petition.parliament.uk/petitions/331430)")
+st.markdown(f"Data from [petition.parliament.uk](https://petition.parliament.uk/), specificially - [1](https://petition.parliament.uk/petitions/{petition_1}), [2](https://petition.parliament.uk/petitions/{petition_2})")
